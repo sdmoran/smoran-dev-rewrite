@@ -1,0 +1,15 @@
+{
+  "name": "smoran-dev-rewrite",
+  "version": "1.0.0",
+  "description": "Rewrite in Node for my personal website, smoran.dev",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sdhmoran@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
