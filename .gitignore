@@ -1,2 +1,5 @@
 env.sh
 node_modules/
+files/images/test*
+files/tailwind.css
+db/db.js
