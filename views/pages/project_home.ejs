@@ -14,27 +14,25 @@
                 <div class="flex justify-between">
                     <% projects.forEach(function(project, index){ %>
                         <div class="p-5">
-                            
-                        <!-- Article -->
-                        <div class="overflow-hidden rounded-lg shadow-lg">
+                            <!-- Projects -->
+                            <div class="overflow-hidden rounded-lg shadow-lg">
 
-                            <a href="#">
-                                <img alt="Placeholder" class="block h-auto w-full" src="https://picsum.photos/600/400/?random">
-                            </a>
+                                <a href="#">
+                                    <img alt="Placeholder" class="block h-auto w-full" src="https://picsum.photos/600/400/?random">
+                                </a>
 
-                            <header class="flex items-center justify-between leading-tight p-2 md:p-4">
-                                <div>
-                                    <h1 class="text-lg">
-                                        <a class="no-underline hover:underline text-black" href="#">
-                                            <%= project.name %>
-                                        </a>
-                                    </h1>
-                                    <p class="text-gray-700"><%= project.blurb %></p>
+                                <div class="flex items-center justify-between leading-tight p-2 md:p-4">
+                                    <div>
+                                        <h1 class="text-lg">
+                                            <a class="no-underline hover:underline text-black" href="#">
+                                                <%= project.name %>
+                                            </a>
+                                        </h1>
+                                        <p class="text-gray-700"><%= project.blurb %></p>
+                                    </div>
                                 </div>
 
-                            </header>
-
-                        </div>
+                            </div>
                         
                         </div>
                     <% }) %>

@@ -4,7 +4,8 @@
   "description": "Rewrite in Node for my personal website, smoran.dev",
   "main": "server.js",
   "scripts": {
-    "start": "postcss ./files/style.css -o ./dist/tailwind.css && node server.js",
+    "start": "node server.js",
+    "dev": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "sdhmoran@gmail.com",

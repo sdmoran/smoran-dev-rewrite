@@ -11,7 +11,13 @@ app.use('/files', express.static('files'));
 app.use('/projects', projectRoutes);
 
 app.get('/', (req, res) => {
-    res.render('pages/index')
+    API.getAllProjects().then(projects => {
+        res.render('pages/index', { projects });
+    })
+    .catch(e => {
+        console.log(e);
+        res.render('pages/404');
+    })
 });
 
 app.get('*', (req, res) => {
