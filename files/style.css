@@ -2,6 +2,10 @@ h1 {
     font-size: xx-large;
 }
 
+.border {
+    width: 2px;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -24,3 +28,7 @@ body {
     padding-left: 1rem;
     padding-right: 1rem;
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

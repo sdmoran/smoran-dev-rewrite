@@ -11,13 +11,16 @@
                 <p class="text-blue-500">
                     Here is a list of all projects I've done.
                 </p>
-                <div class="flex justify-between">
+                <div class="flex flex-col justify-between">
                     <% projects.forEach(function(project, index){ %>
+
                         <div class="p-5">
                             <!-- Projects -->
-                            <div class="overflow-hidden rounded-lg shadow-lg">
+                            <div class="flex flex-row overflow-hidden rounded-lg shadow-lg">
 
-                                <a href="#">
+                            <% if(Math.random() > 0.5)  { %>
+
+                                <a href="#" class="flex">
                                     <img alt="Placeholder" class="block h-auto w-full" src="https://picsum.photos/600/400/?random">
                                 </a>
 
@@ -32,7 +35,25 @@
                                     </div>
                                 </div>
 
+                                <% } else { %>
+                                    <div class="flex items-center justify-between leading-tight p-2 md:p-4">
+                                        <div>
+                                            <h1 class="text-lg">
+                                                <a class="no-underline hover:underline text-black" href="#">
+                                                    <%= project.name %>
+                                                </a>
+                                            </h1>
+                                            <p class="text-gray-700"><%= project.blurb %></p>
+                                        </div>
+                                    </div>
+
+                                    <a href="#" class="flex">
+                                        <img alt="Placeholder" class="block h-auto w-full" src="https://picsum.photos/600/400/?random">
+                                    </a>
+                                <% } %>
+                        
                             </div>
+
                         
                         </div>
                     <% }) %>

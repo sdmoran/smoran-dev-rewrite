@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js",
+    "dev": "npx tailwindcss-cli@latest build ./files/style.css -o ./files/tailwind.css && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "sdhmoran@gmail.com",

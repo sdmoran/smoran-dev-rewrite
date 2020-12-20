@@ -4,6 +4,9 @@ const API = require("../db/API")
 
 router.get('/all', (req, res) => {
     const projects = API.getAllProjects().then((projects) => {
+        for(let i = 0; i < 4; i++) {
+            projects.push(projects[0]);
+        }
         res.render("pages/project_home", { projects })
     })
     .catch(() => {
