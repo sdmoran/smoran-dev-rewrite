@@ -1,4 +1,5 @@
 const express = require('express');
+var bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000;
 const API = require('./db/API')
@@ -7,6 +8,9 @@ const projectRoutes = require('./routes/projects');
 const adminRoutes = require('./routes/admin');
 
 app.set('view engine', 'ejs');
+
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
 
 app.use('/files', express.static('files'));
 app.use('/projects', projectRoutes);

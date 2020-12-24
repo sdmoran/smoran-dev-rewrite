@@ -30,6 +30,17 @@ const getProject = function(projectname) {
     })
 }
 
-exports.getProject = getProject;
+const addProject = function(project) {
+    return new Promise((resolve, reject) => {
+        return client.db("smoran-dev").collection("projects").insert(project).then((result) => {
+            if(result) resolve(result);
+            reject(result);
+        }).catch(e => {
+            reject(e);
+        })
+    })
+}
 
+exports.getProject = getProject;
 exports.getAllProjects = getAllProjects;
+exports.addProject = addProject;
