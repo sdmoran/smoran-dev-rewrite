@@ -72,16 +72,20 @@
             }            
             const technologies = document.getElementById("technologies").value;
             const classIfAny = document.getElementById("class").value;
+            const image = document.getElementById("image").files[0];
 
-            let project = {
-                name,
-                blurb,
-                paragraphs,
-                technologies,
-            }
+
+            let project = new FormData();
+            
+            project.append("name", name);
+            project.append("blurb", blurb);
+            project.append("paragraphs", paragraphs);
+            project.append("technologies", technologies);
+            project.append("image", image);
+
 
             if(classIfAny) {
-                project.class = classIfAny;
+                project.append("class", classIfAny);
             }
 
             console.log(project);
@@ -90,10 +94,7 @@
 
             fetch(url, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ project })
+                body: project
             })
             .then(resp => {
                 console.log(resp)

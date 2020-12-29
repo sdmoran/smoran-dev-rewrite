@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const express = require('express')
 const router = express.Router()
 const API = require("../db/API")
@@ -27,14 +29,34 @@ router.get('/', devOnly, (req, res) => {
     res.render("admin/dashboard")
 })
 
-
 router.post('/add_project', devOnly, (req, res) => {
-    console.log(req.body)
-    // API.addProject(req.body)
-    // .then(() => {
-    //     res.redirect('all_projects')
-    // })
-    res.redirect('all_projects')
+    // TODO instead of this, store files in MongoDB or S3 or something so they're find-able later
+    const imgPath = process.env.IMAGE_DIR + req.files.image.name;
+    fs.writeFile(imgPath, req.files.image.data, (err) => {
+        if(err) {
+            console.log("An error occured!", err);
+        }
+        else {
+            console.log(`Wrote image to ${imgPath}`)
+        }
+    })
+
+    // Once image is written, try to upload it to S3
+    API.uploadImage(imgPath)
+    .then(url => {
+        console.log("UPloaded image URL: ", url)
+        // Add name of uploaded image to project data so it will be visible on project page
+        const project = req.body;
+        req.body.images = []
+        req.body.images.push(url)
+
+        API.addProject(project)
+        .then(() => {
+            res.redirect('/all_projects')
+        })
+    })
+
+
 })
 
 module.exports = router

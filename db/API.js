@@ -1,4 +1,6 @@
-
+// Set AWS credentials
+const AWS = require("aws-sdk")
+AWS.config.loadFromPath(__dirname + '/aws-config.json')
 const MongoClient = require('mongodb').MongoClient;
 
 const DB_USER = process.env.DB_USER;
@@ -41,6 +43,30 @@ const addProject = function(project) {
     })
 }
 
+const uploadImage = function(fname) {
+    return new Promise((resolve, reject) => {
+        s3 = new AWS.S3({apiVersion: '2020-12-28'});
+        const uploadParams = {Bucket: "smoran.dev-media", Key: '', Body: ''};
+        var fs = require('fs');
+        const file = fname;
+        var fStream = fs.createReadStream(file);
+        uploadParams.Body = fStream;
+        var path = require('path');
+        uploadParams.Key = "images/" + path.basename(file);
+    
+        s3.upload (uploadParams, function (err, data) {
+            if (err) {
+              console.log("Error", err);
+              reject(err);
+            } if (data) {
+              console.log("Upload Success", data.Location);
+              resolve(data.Location);
+            }
+          });
+    })
+}
+
 exports.getProject = getProject;
 exports.getAllProjects = getAllProjects;
 exports.addProject = addProject;
+exports.uploadImage = uploadImage;

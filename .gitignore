@@ -2,3 +2,4 @@ env.sh
 node_modules/
 files/images/test*
 db/db.js
+db/aws-config.json

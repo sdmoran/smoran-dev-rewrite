@@ -4,9 +4,6 @@ const API = require("../db/API")
 
 router.get('/all', (req, res) => {
     const projects = API.getAllProjects().then((projects) => {
-        for(let i = 0; i < 4; i++) {
-            projects.push(projects[0]);
-        }
         res.render("pages/project_home", { projects })
     })
     .catch(() => {
@@ -17,7 +14,6 @@ router.get('/all', (req, res) => {
 router.get('/:projectname', (req, res) => {
     const projectName = req.params.projectname;
     API.getProject(projectName).then((project) => {
-        console.log("project")
         res.render("pages/project", project);
     })
     .catch(() => {
