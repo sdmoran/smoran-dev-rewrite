@@ -27,7 +27,9 @@ app.use('/admin', adminRoutes);
 
 app.get('/', (req, res) => {
     API.getAllProjects().then(projects => {
-        res.render('pages/index', { projects });
+        // Get 3 random projects
+        const selected = projects.sort(() => 0.5 - Math.random()).slice(0, 3)
+        res.render('pages/index', { projects: selected });
     })
     .catch(e => {
         console.log(e);

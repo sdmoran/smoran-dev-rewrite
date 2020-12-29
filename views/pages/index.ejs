@@ -12,15 +12,14 @@
             </div>
             <!-- Projects -->
             <div class="flex flex-col items-center space-y-6">
-                <h1>Projects</h1>
+                <h1 class="text-blue-400">Projects</h1>
 
                 <div class="flex flex-row items-start space-x-20 ">
                     
-                    <% projects.forEach(function(project, index){ %>
-                        <div class="w-48 h-16  items-center text-center rounded-md bg-blue-300" onclick="location.href = '/projects/<%= project.name %>'"><%= project.name %></div>
-                    <% })%>
-                    <!-- <div class="w-48 h-16  items-center text-center rounded-md bg-blue-300" onclick="location.href = '/projects/Example%20Project'">Here is a project!</div> -->
-                    <!-- <div class="w-48 h-16  items-center text-center rounded-md bg-blue-300" onclick="location.href = '/projects/Example%20Project'">Here is a project!</div> -->
+                    <% for(let i = 0; i < 3; i++) { %>
+                        <% project = projects[i] %>
+                        <div class="w-48 h-16 items-center text-center rounded-md bg-blue-300 p-4" onclick="location.href = '/projects/<%= project.name %>'"><%= project.name %></div>
+                    <% }%>
                 </div>
             </div>
         </div>
