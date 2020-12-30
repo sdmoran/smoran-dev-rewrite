@@ -1,6 +1,5 @@
-// Set AWS credentials
+// AWS credentials read automatically from environment variables
 const AWS = require("aws-sdk")
-AWS.config.loadFromPath(__dirname + '/aws-config.json')
 const MongoClient = require('mongodb').MongoClient;
 
 const DB_USER = process.env.DB_USER;
