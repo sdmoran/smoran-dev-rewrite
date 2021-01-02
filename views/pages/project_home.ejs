@@ -9,8 +9,12 @@
             <div class="m-16 flex flex-col items-center">
                 <h1 class="text-blue-400">All Projects</h1>
                 <p class="text-blue-500">
-                    Here is a list of all projects I've done.
+                    Here is a list of some projects I've done.
                 </p>
+                <div id="app">
+
+                </div>
+
                 <div class="flex flex-col justify-between">
                     <% projects.forEach(function(project, index){ %>
 
@@ -19,7 +23,7 @@
                             <% if(Math.random() > 0.5)  { %>
                                 <div class="flex flex-row overflow-hidden rounded-lg shadow-lg">
                                 <a href="/projects/<%= project.name%>" class="flex">
-                                    <img alt="Placeholder" class="block h-auto w-full" src="https://picsum.photos/600/400/?random">
+                                    <img alt="Placeholder" class="block max-h-96" src="<%= project.images[0] %>">
                                 </a>
 
                                 <div class="flex items-center justify-between leading-tight p-2 md:p-4">
@@ -38,7 +42,7 @@
                                     <div class="flex items-center justify-between leading-tight p-2 md:p-4">
                                         <div>
                                             <h1 class="text-lg">
-                                                <a class="no-underline hover:underline text-black" href="/projects/<%= project.name%>">
+                                                <a class="no-underline hover:underline text-black" href="/projects/<%= project.name %>">
                                                     <%= project.name %>
                                                 </a>
                                             </h1>
@@ -46,8 +50,8 @@
                                         </div>
                                     </div>
 
-                                    <a href="#" class="/projects/<%= project.name%>">
-                                        <img alt="Placeholder" class="block h-auto w-full" src="https://picsum.photos/600/400/?random">
+                                    <a href="/projects/<%= project.name%>" class="flex">
+                                        <img alt="Placeholder" class="block max-h-96" src="<%= project.images[0] %>">
                                     </a>
                                 <% } %>
                             </div>

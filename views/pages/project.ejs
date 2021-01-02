@@ -5,11 +5,15 @@
         <%- include('../partials/head.ejs') %>
     </head>
     <body>
-        <div class="flex flex-col  justify-center space-y-20 ">
-            <div class="m-16 flex flex-col items-center">
-                <h1 class="text-blue-400"><%= name %></h1>
-                <p><%= blurb %></p>
-                <img src="<%= images[0] %>">
+        <div class="flex flex-col items-center space-y-20 ">
+            <div class="m-16 flex flex-col items-center max-w-6xl">
+                <h1 class="text-blue-400"><%= project.name %></h1>
+                <p><% project.paragraphs.forEach(function(paragraph, idx) { %>
+                    <div class="p-2">
+                        <%= paragraph %>
+                    </div>
+                <% }) %></p>
+                <img src="<%= project.images[0] %>">
             </div>
         </div>
     </body>

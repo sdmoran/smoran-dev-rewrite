@@ -7,35 +7,45 @@
     <body>
         <div class="flex flex-col justify-center space-y-20 ">
             <div class="m-16 flex flex-col items-center">
-                <h1 class="text-blue-400">Add Project</h1>
+                <h1 class="text-blue-400">Edit Project</h1>
+                <h2 class="text-blue-300"><%= project.name %></h2>
                 <form class="flex flex-col" action="/admin/add_project" method="POST">
 
                     <label for="name">Project Name</label>
-                    <input id="name" name="name" type="text" placeholder="Project Name" class="flex-grow border-2 border-gray-300 rounded-md py-3 px-4 my-1">
+                    <input id="name" name="name" type="text" value="<%= project.name %>" class="flex-grow border-2 border-gray-300 rounded-md py-3 px-4 my-1">
                     
                     <label for="blurb">Project Blurb</label>
-                    <textarea id="blurb" name="blurb" type="text" placeholder="Project Blurb" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"></textarea>
+                    <textarea id="blurb" name="blurb" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"><%= project.blurb %></textarea>
                     
                     <label for="class">Class</label>
-                    <input id="class" name="class" type="text" placeholder="Class (if any)" class="flex-grow border-2 border-gray-300 rounded-md py-3 px-4 my-1">
+                    <input id="class" name="class" type="text" value="<%= project.class %>" class="flex-grow border-2 border-gray-300 rounded-md py-3 px-4 my-1">
                    
                     <div id="paragraphs" class="flex flex-col">
                         <label for="paragraphInputs">Project Description</label>
                         <div id="paragraphInputs" class="flex flex-col">
-                            <textarea id="paragraph1" name="paragraph1" type="text" placeholder="Paragraph 1" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"></textarea>
+                            <% project.paragraphs.forEach(function(paragraph, idx) { %>
+                                <textarea id="paragraph1" name="paragraph1" type="text" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"><%= paragraph %></textarea>
+                            <% }) %>
                         </div>
                         <button type="button" class="items-center text-center rounded-md bg-blue-300" onclick="addParagraphField()">Add Paragraph</button>
                     </div>
                     
                     <label for="technologies">Technologies</label>
-                    <textarea id="technologies" name="technologies" type="text" placeholder="Technologies" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"></textarea>
+                    <textarea id="technologies" name="technologies" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"><%= project.technologies %></textarea>
                     
                     <label for="images">Images</label>
                     <div class="border-2 border-gray-300 rounded-md py-3 px-4 my-1">
-                        <input type="file" id="images" name="image" placeholder="Image">
+                        <% project.images.forEach(function(img, idx) { %>
+                            <div class="flex flex-row">
+                                <img src="<%= img %>" class="rounded-md max-h-80 border-2 border-indigo-300 m-1">
+                                <button type="button" class="rounded-md bg-red-500 text-white p-2 m-1">Delete</button>
+                            </div>
+                        <% }) %>
+                        <label for="image">Add Image</label>
+                        <input type="file" id="image" name="image">
                     </div>
                     
-                    <button type="button" class="items-center text-center rounded-md bg-blue-300" onclick="submitForm()">Submit</button>
+                    <button type="button" class="items-center text-center rounded-md bg-blue-300" onclick="submitForm()">Update Project</button>
                 </form>
             </div>
         </div>
@@ -72,8 +82,8 @@
             }            
             const technologies = document.getElementById("technologies").value;
             const classIfAny = document.getElementById("class").value;
-            // TODO support uploading multiple images
-            const images = document.getElementById("images").files[0];
+            const image = document.getElementById("image").files[0];
+
 
             let project = new FormData();
             
@@ -82,7 +92,8 @@
             // Encode as JSON string, otherwise it gets sent to server comma-separated
             project.append("paragraphs", JSON.stringify(paragraphs));
             project.append("technologies", technologies);
-            project.append("images", images);
+            project.append("image", image);
+
 
             if(classIfAny) {
                 project.append("class", classIfAny);
@@ -90,7 +101,7 @@
 
             console.log(project);
 
-            const url = "/admin/add_project";
+            const url = "/admin/projects/edit/<%= project._id %>";
 
             fetch(url, {
                 method: "POST",

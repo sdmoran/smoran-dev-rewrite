@@ -14,7 +14,8 @@ router.get('/all', (req, res) => {
 router.get('/:projectname', (req, res) => {
     const projectName = req.params.projectname;
     API.getProject(projectName).then((project) => {
-        res.render("pages/project", project);
+        console.log(project)
+        res.render("pages/project", { project });
     })
     .catch(() => {
         res.render("pages/project_error");

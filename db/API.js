@@ -1,6 +1,7 @@
 // AWS credentials read automatically from environment variables
 const AWS = require("aws-sdk")
 const MongoClient = require('mongodb').MongoClient;
+const ObjectID = require('mongodb').ObjectID
 
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
@@ -31,6 +32,18 @@ const getProject = function(projectname) {
     })
 }
 
+const getProjectByID = function(id) {
+    return new Promise((resolve, reject) => {
+        const objectId = new ObjectID(id);
+        return client.db("smoran-dev").collection("projects").findOne({'_id': objectId}).then((result) => {
+            if(result) resolve(result);
+            reject(result);
+        }).catch(e => {
+            reject(e);
+        })
+    })
+}
+
 const addProject = function(project) {
     return new Promise((resolve, reject) => {
         return client.db("smoran-dev").collection("projects").insert(project).then((result) => {
@@ -39,6 +52,25 @@ const addProject = function(project) {
         }).catch(e => {
             reject(e);
         })
+    })
+}
+
+const updateProject = function(projectID, project) {
+    const objectId = new ObjectID(projectID)
+    console.log(project)
+    return new Promise((resolve, reject) => {
+        return client.db("smoran-dev").collection("projects")
+        .updateOne({'_id': objectId}, 
+        { $set: {
+                name: project.name,
+                class: project.class,
+                blurb: project.blurb,
+                paragraphs: project.paragraphs,
+                images: project.images
+            }
+        },
+        { upsert: true}
+        )
     })
 }
 
@@ -66,6 +98,8 @@ const uploadImage = function(fname) {
 }
 
 exports.getProject = getProject;
+exports.getProjectByID = getProjectByID;
 exports.getAllProjects = getAllProjects;
 exports.addProject = addProject;
+exports.updateProject = updateProject;
 exports.uploadImage = uploadImage;

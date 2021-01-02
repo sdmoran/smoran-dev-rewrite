@@ -20,9 +20,36 @@ router.get('/add_project', devOnly, (req, res) => {
 
 router.get('/all_projects', devOnly, (req, res) => {
     API.getAllProjects()
-    .then(projects => {
-        res.render("admin/all_projects", { projects })
-    })
+    .then(
+        projects => {
+            if(projects) {
+                res.render("admin/all_projects", { projects })
+            }
+            else {
+                res.render("pages/404")
+            }
+        }
+    )
+})
+
+router.get('/projects/edit/:projectID', devOnly, (req, res) => {
+    const projectID = req.params.projectID;
+    API.getProjectByID(projectID)
+    .then(
+        project => {
+            if(project) {
+                res.render("admin/edit_project", { project })
+            }
+            else {
+                res.render("pages/404")
+            }
+        }
+    )
+    .catch(
+        e => {
+            res.render("pages/404")
+        }
+    )
 })
 
 router.get('/', devOnly, (req, res) => {
@@ -30,33 +57,57 @@ router.get('/', devOnly, (req, res) => {
 })
 
 router.post('/add_project', devOnly, (req, res) => {
-    // TODO instead of this, store files in MongoDB or S3 or something so they're find-able later
-    const imgPath = process.env.IMAGE_DIR + req.files.image.name;
-    fs.writeFile(imgPath, req.files.image.data, (err) => {
-        if(err) {
-            console.log("An error occured!", err);
-        }
-        else {
-            console.log(`Wrote image to ${imgPath}`)
-        }
-    })
+    // Write image to local storage so it can be uploaded to S3
 
-    // Once image is written, try to upload it to S3
-    API.uploadImage(imgPath)
-    .then(url => {
-        console.log("UPloaded image URL: ", url)
-        // Add name of uploaded image to project data so it will be visible on project page
-        const project = req.body;
-        req.body.images = []
-        req.body.images.push(url)
+    const project = req.body;
+    // Encoded as JSON array because FormData will comma-separate array elements otherwise
+    project.paragraphs = JSON.parse(req.body.paragraphs);
+    project.images = []
+    console.log(project)
 
+    if(req.files) {
+        const imgPath = process.env.IMAGE_DIR + req.files.images.name;
+        fs.writeFile(imgPath, req.files.images.data, (err) => {
+            if(err) {
+                console.log("An error occured!", err);
+            }
+            else {
+                console.log(`Wrote image to ${imgPath}`)
+            }
+        })
+    
+        // Once image is written, try to upload it to S3
+        API.uploadImage(imgPath)
+        .then(url => {
+            console.log("Uploaded image URL: ", url)
+            // Add name of uploaded image to project data so it will be visible on project page
+            project.images.push(url)
+    
+            API.addProject(project)
+            .then(() => {
+                res.redirect('/all_projects')
+            })
+        })
+    }
+    
+    else {
         API.addProject(project)
         .then(() => {
             res.redirect('/all_projects')
         })
-    })
+    }
+})
 
-
+router.post('/projects/edit/:projectID', devOnly, (req, res) => {
+    const projectID = req.params.projectID;
+    const project = req.body;
+    project.paragraphs = JSON.parse(req.body.paragraphs);
+    if(!project.images) {
+        project.images = []
+    }
+    console.log(project)
+    console.log(projectID)
+    API.updateProject(projectID, project)
 })
 
 module.exports = router
