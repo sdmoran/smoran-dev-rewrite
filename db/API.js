@@ -74,6 +74,20 @@ const updateProject = function(projectID, project) {
     })
 }
 
+const deleteProject = function(projectID) {
+    const objectId = new ObjectID(projectID)
+    return new Promise((resolve, reject) => {
+        client.db("smoran-dev").collection("projects")
+        .deleteOne({'_id': objectId})
+        .then( result => {
+            resolve(result)
+        })
+        .catch( e => {
+            reject(e);
+        })
+    })
+}
+
 const uploadImage = function(fname) {
     return new Promise((resolve, reject) => {
         s3 = new AWS.S3({apiVersion: '2020-12-28'});
@@ -102,4 +116,5 @@ exports.getProjectByID = getProjectByID;
 exports.getAllProjects = getAllProjects;
 exports.addProject = addProject;
 exports.updateProject = updateProject;
+exports.deleteProject = deleteProject;
 exports.uploadImage = uploadImage;

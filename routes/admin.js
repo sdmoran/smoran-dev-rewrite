@@ -121,4 +121,17 @@ router.post('/projects/edit/:projectID', devOnly, (req, res) => {
     API.updateProject(projectID, project)
 })
 
+router.post('/projects/delete/:projectID', devOnly, (req, res) => {
+    const projectID = req.params.projectID;
+    API.deleteProject(projectID)
+    .then(() => {
+        res.send("Deleted project!")
+    })
+    .catch(
+        (e) => {
+            res.send(`Failed to delete project! Error: ${e}`)
+        }
+    )
+})
+
 module.exports = router
