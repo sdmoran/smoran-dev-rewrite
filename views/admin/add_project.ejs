@@ -31,8 +31,8 @@
                     <textarea id="technologies" name="technologies" type="text" placeholder="Technologies" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"></textarea>
                     
                     <label for="images">Images</label>
-                    <div class="border-2 border-gray-300 rounded-md py-3 px-4 my-1">
-                        <input type="file" id="images" name="image" placeholder="Image">
+                    <div class="border-2 border-gray-300 rounded-md py-3 px-4 my-1" id="imagediv">
+                        <input type="file" id="images" multiple name="image" onChange="loadImgPreview(event)">
                     </div>
                     
                     <button type="button" class="items-center text-center rounded-md bg-blue-300" onclick="submitForm()">Submit</button>
@@ -43,7 +43,30 @@
 
     <script>
         let paragraphs = 1;
+        let addedPreview = true;
 
+        // Preview files user uploads
+        function loadImgPreview(event) {
+            const files = event.target.files;
+            console.log(files)
+            const imgDiv = document.getElementById("imagediv");
+            // For each file, create image and append it to images div            
+            for(let i = 0; i < files.length; i++) {
+                let file = files[i];
+                console.log(file)
+                if(file.type.match('image')) {
+                    let preview = document.createElement("img");
+                    preview.src = URL.createObjectURL(file);
+                    preview.classList.add("max-h-80")
+                    preview.onload = function() {
+                        URL.revokeObjectURL(preview.src);
+                    }
+                    imgDiv.appendChild(preview)
+                }
+            }
+        }
+
+        // Add additional paragraph fields to form
         function addParagraphField() {
             paragraphs += 1;
             const div = document.getElementById("paragraphInputs");
@@ -59,6 +82,7 @@
             div.appendChild(newElt);
         }
 
+        // Submit form
         function submitForm() {
             const name = document.getElementById("name").value;
             const blurb = document.getElementById("blurb").value;
@@ -72,8 +96,6 @@
             }            
             const technologies = document.getElementById("technologies").value;
             const classIfAny = document.getElementById("class").value;
-            // TODO support uploading multiple images
-            const images = document.getElementById("images").files[0];
 
             let project = new FormData();
             
@@ -82,7 +104,12 @@
             // Encode as JSON string, otherwise it gets sent to server comma-separated
             project.append("paragraphs", JSON.stringify(paragraphs));
             project.append("technologies", technologies);
-            project.append("images", images);
+
+            // Loop through images and attach them to FormData
+            const images = document.getElementById("images").files;
+            for(let i = 0; i < images.length; i++) {
+                project.append("image" + i, images[i])
+            }
 
             if(classIfAny) {
                 project.append("class", classIfAny);

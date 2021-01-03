@@ -46,7 +46,7 @@ const getProjectByID = function(id) {
 
 const addProject = function(project) {
     return new Promise((resolve, reject) => {
-        return client.db("smoran-dev").collection("projects").insert(project).then((result) => {
+        return client.db("smoran-dev").collection("projects").insertOne(project).then((result) => {
             if(result) resolve(result);
             reject(result);
         }).catch(e => {
