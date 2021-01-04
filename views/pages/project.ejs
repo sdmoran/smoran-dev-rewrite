@@ -5,15 +5,22 @@
         <%- include('../partials/head.ejs') %>
     </head>
     <body>
-        <div class="flex flex-col items-center space-y-20 ">
-            <div class="m-16 flex flex-col items-center max-w-6xl">
-                <h1 class="text-blue-400"><%= project.name %></h1>
-                <p><% project.paragraphs.forEach(function(paragraph, idx) { %>
-                    <div class="p-2">
-                        <%= paragraph %>
-                    </div>
+        <div class="flex flex-col items-center space-y-2 ">
+            <h1 class="text-blue-400 my-12"><%= project.name %></h1>
+            <div class="m-16 flex flex-col justify-items-start max-w-6xl">
+                
+                <h2 class="text-blue-400">Description</h2>
+                <p class="py-1"><% project.paragraphs.forEach(function(paragraph, idx) { %>
+                    <%= paragraph %>
                 <% }) %></p>
-                <img src="<%= project.images[0] %>">
+
+                <!-- Render images -->
+                <% project.images.forEach(function(img, idx) { %>
+                    <img src="<%= img %>" class="max-h-80">
+                <% }) %>
+
+                <h2 class="text-blue-400">Technologies</h2>
+                <p class="py-1"><%= project.technologies %></p>
             </div>
         </div>
     </body>
