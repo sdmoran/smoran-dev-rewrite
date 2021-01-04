@@ -88,6 +88,7 @@ router.post('/add_project', devOnly, (req, res) => {
                         console.log("Uploaded image URL: ", url)
                         // Add name of uploaded image to project data so it will be visible on project page
                         project.images.push(url)
+                        count++;
                     })
                     .finally( () => {
                         if(count == numKeys) {
@@ -101,12 +102,12 @@ router.post('/add_project', devOnly, (req, res) => {
             }
         })
     }()
-    .then(
+    .then(() => {
         API.addProject(project)
         .then(() => {
             res.redirect('/all_projects')
         })
-    )
+    })
 })
 
 router.post('/projects/edit/:projectID', devOnly, (req, res) => {
