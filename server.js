@@ -5,6 +5,7 @@ const fileUpload = require('express-fileupload')
 
 const app = express();
 const port = process.env.PORT || 3000;
+const mode = process.env.MODE || "prod";
 const API = require('./db/API')
 
 const projectRoutes = require('./routes/projects');
@@ -40,6 +41,24 @@ app.get('/', (req, res) => {
 app.get('*', (req, res) => {
     res.render('pages/404')
 });
+
+// Stop EJS from dumping errors directly to users in production
+function gracefulRenderError(err, req, res, next) {
+    // EJS render errors are TypeError
+    if (err instanceof TypeError) {
+        console.log(err)
+        // In dev mode, show error
+        if(mode === "dev") {
+            next(err);
+        }
+        else {
+            // In prod, hide!
+            res.render('pages/error')
+        }
+    }
+}
+
+app.use(gracefulRenderError);
 
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
