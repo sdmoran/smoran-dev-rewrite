@@ -14,7 +14,7 @@ client.connect();
 
 const getAllProjects = function() {
     return new Promise((resolve, reject) => {
-        return client.db("smoran-dev").collection("projects").find({}).toArray((err, result) => {
+        client.db("smoran-dev").collection("projects").find({}).toArray((err, result) => {
             if(err) reject(err);
             resolve(result);
         })
@@ -23,7 +23,7 @@ const getAllProjects = function() {
 
 const getProject = function(projectname) {
     return new Promise((resolve, reject) => {
-        return client.db("smoran-dev").collection("projects").findOne({name: projectname}).then((result) => {
+        client.db("smoran-dev").collection("projects").findOne({name: projectname}).then((result) => {
             if(result) resolve(result);
             reject(result);
         }).catch(e => {
@@ -35,7 +35,7 @@ const getProject = function(projectname) {
 const getProjectByID = function(id) {
     return new Promise((resolve, reject) => {
         const objectId = new ObjectID(id);
-        return client.db("smoran-dev").collection("projects").findOne({'_id': objectId}).then((result) => {
+        client.db("smoran-dev").collection("projects").findOne({'_id': objectId}).then((result) => {
             if(result) resolve(result);
             reject(result);
         }).catch(e => {
@@ -46,7 +46,7 @@ const getProjectByID = function(id) {
 
 const addProject = function(project) {
     return new Promise((resolve, reject) => {
-        return client.db("smoran-dev").collection("projects").insertOne(project).then((result) => {
+        client.db("smoran-dev").collection("projects").insertOne(project).then((result) => {
             if(result) resolve(result);
             reject(result);
         }).catch(e => {
@@ -59,7 +59,7 @@ const updateProject = function(projectID, project) {
     const objectId = new ObjectID(projectID)
     console.log(project)
     return new Promise((resolve, reject) => {
-        return client.db("smoran-dev").collection("projects")
+        client.db("smoran-dev").collection("projects")
         .updateOne({'_id': objectId}, 
         { $set: {
                 name: project.name,
