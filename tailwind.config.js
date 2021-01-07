@@ -1,18 +1,19 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  theme: {
-    colors: {
-      amber: colors.amber,
-    }
-  },
-  purge: [],
-  darkMode: false, // or 'media' or 'class'
-  theme: {
-    extend: {},
-  },
-  variants: {
-    extend: {},
-  },
-  plugins: [],
-}
+    purge: [],
+    theme: {
+      extend: {
+        fontFamily: {
+            sans: ['Lato', 'sans-serif'],
+            heading: ['Oswald', 'sans-serif']
+        },
+        colors: {
+            amber: colors.amber,
+            indigo: colors.indigo
+        },
+      },
+    },
+    variants: {},
+    plugins: [],
+  }

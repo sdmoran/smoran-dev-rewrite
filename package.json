@@ -5,19 +5,22 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "build": "postcss tailwind.source.css -o ./files/tailwind.css",
     "dev": "npx tailwindcss-cli@latest build ./files/style.css -o ./files/tailwind.css && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "sdhmoran@gmail.com",
   "license": "ISC",
   "dependencies": {
-    "autoprefixer": "^10.1.0",
     "aws-sdk": "^2.818.0",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.0",
-    "mongodb": "^3.6.3",
-    "postcss": "^8.2.1",
+    "mongodb": "^3.6.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.2.0",
+    "postcss": "^8.2.2",
     "postcss-cli": "^8.3.1",
     "tailwindcss": "^2.0.2"
   }
