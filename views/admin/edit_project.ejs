@@ -7,7 +7,7 @@
     <body>
         <div class="flex flex-col justify-center space-y-20 ">
             <div class="m-16 flex flex-col items-center">
-                <h1 class="text-blue-400">Edit Project</h1>
+                <h1 class="text-blue-400"><%= edit ? "Edit" : "Add"%> Project</h1>
                 <h2 class="text-blue-300"><%= project.name %></h2>
                 <form class="flex flex-col" action="/admin/add_project" method="POST">
 
@@ -23,9 +23,11 @@
                     <div id="paragraphs" class="flex flex-col">
                         <label for="paragraphInputs">Project Description</label>
                         <div id="paragraphInputs" class="flex flex-col">
-                            <% project.paragraphs.forEach(function(paragraph, idx) { %>
-                                <textarea id="paragraph1" name="paragraph1" type="text" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"><%= paragraph %></textarea>
-                            <% }) %>
+                            <% if(project.paragraphs) { %>
+                                <% project.paragraphs.forEach(function(paragraph, idx) { %>
+                                    <textarea id="paragraph1" name="paragraph1" type="text" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"><%= paragraph %></textarea>
+                                <% }) %>
+                            <% } %>
                         </div>
                         <button type="button" class="items-center text-center rounded-md bg-blue-300" onclick="addParagraphField()">Add Paragraph</button>
                     </div>
@@ -34,15 +36,17 @@
                     <textarea id="technologies" name="technologies" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"><%= project.technologies %></textarea>
                     
                     <label for="images">Images</label>
-                    <div class="border-2 border-gray-300 rounded-md py-3 px-4 my-1">
-                        <% project.images.forEach(function(img, idx) { %>
-                            <div class="flex flex-row">
-                                <img src="<%= img %>" class="rounded-md max-h-80 border-2 border-indigo-300 m-1">
-                                <button type="button" class="rounded-md bg-red-500 text-white p-2 m-1">Delete</button>
-                            </div>
-                        <% }) %>
-                        <label for="image">Add Image</label>
-                        <input type="file" id="image" name="image">
+                    <div class="border-2 border-gray-300 rounded-md py-3 px-4 my-1" id="imagediv">
+                        <input type="file" id="images" multiple name="image" onChange="loadImgPreview(event)">
+
+                        <% if(project.images) { %>
+                            <% project.images.forEach(function(img, idx) { %>
+                                <div class="flex flex-row">
+                                    <img src="<%= img %>" class="rounded-md max-h-80 border-2 border-indigo-300 m-1">
+                                    <button type="button" class="rounded-md bg-red-500 text-white p-2 m-1">Delete</button>
+                                </div>
+                            <% }) %>
+                        <% } %>
                     </div>
                     
                     <button type="button" class="items-center text-center rounded-md bg-blue-300" onclick="submitForm()">Update Project</button>
@@ -53,6 +57,39 @@
 
     <script>
         let paragraphs = 1;
+
+        // Preview files user uploads
+        function loadImgPreview(event) {
+            const files = event.target.files;
+            console.log(files)
+            const imgDiv = document.getElementById("imagediv");
+            // For each file, create image and append it to images div
+            for(let i = 0; i < files.length; i++) {
+                let file = files[i];
+                if(file.type.match('image')) {
+                    // Containing div
+                    let containerDiv = document.createElement("div");
+                    containerDiv.classList.add("flex", "flex-row");
+
+                    // Actual preview
+                    let preview = document.createElement("img");
+                    preview.src = URL.createObjectURL(file);
+                    preview.classList.add("rounded-md", "max-h-80", "border-2", "border-indigo-300", "m-1");
+                    preview.onload = function() {
+                        URL.revokeObjectURL(preview.src);
+                    }
+
+                    // Delete button
+                    let deleteButton = document.createElement("button");
+                    deleteButton.innerHTML = "Delete";
+                    deleteButton.classList.add("rounded-md", "bg-red-500", "text-white", "p-2", "m-1");
+
+                    containerDiv.appendChild(preview);
+                    containerDiv.appendChild(deleteButton);
+                    imgDiv.appendChild(containerDiv);
+                }
+            }
+        }
 
         function addParagraphField() {
             paragraphs += 1;
@@ -69,6 +106,7 @@
             div.appendChild(newElt);
         }
 
+        // Submit form
         function submitForm() {
             const name = document.getElementById("name").value;
             const blurb = document.getElementById("blurb").value;
@@ -82,8 +120,6 @@
             }            
             const technologies = document.getElementById("technologies").value;
             const classIfAny = document.getElementById("class").value;
-            const image = document.getElementById("image").files[0];
-
 
             let project = new FormData();
             
@@ -92,8 +128,12 @@
             // Encode as JSON string, otherwise it gets sent to server comma-separated
             project.append("paragraphs", JSON.stringify(paragraphs));
             project.append("technologies", technologies);
-            project.append("image", image);
 
+            // Loop through images and attach them to FormData 
+            const images = document.getElementById("images").files;
+            for(let i = 0; i < images.length; i++) {
+                project.append("image" + i, images[i])
+            }
 
             if(classIfAny) {
                 project.append("class", classIfAny);
@@ -101,7 +141,11 @@
 
             console.log(project);
 
-            const url = "/admin/projects/edit/<%= project._id %>";
+            <% if(edit) { %>
+                const url = "/admin/projects/edit/<%= project._id %>";
+            <% } else { %>
+                const url = "/admin/add_project";
+            <% } %>
 
             fetch(url, {
                 method: "POST",
@@ -109,7 +153,9 @@
             })
             .then(resp => {
                 console.log(resp)
+                window.location.href = "/admin/all_projects"
             })
         }
+
     </script>
 </html>

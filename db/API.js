@@ -57,20 +57,30 @@ const addProject = function(project) {
 
 const updateProject = function(projectID, project) {
     const objectId = new ObjectID(projectID)
-    console.log(project)
     return new Promise((resolve, reject) => {
         client.db("smoran-dev").collection("projects")
         .updateOne({'_id': objectId}, 
-        { $set: {
+        {
+            $set: {
                 name: project.name,
                 class: project.class,
                 blurb: project.blurb,
                 paragraphs: project.paragraphs,
-                images: project.images
+            },
+            $push: {
+                images: { $each:  project.images }
             }
         },
-        { upsert: true}
-        )
+        { 
+            upsert: true
+        })
+        .then((result) => {
+            if(result) resolve(result);
+            reject();
+        })
+        .catch(e => {
+            reject(e);
+        })
     })
 }
 
