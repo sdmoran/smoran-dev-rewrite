@@ -7,8 +7,8 @@
     <body>
         <div class="flex flex-col  justify-center space-y-20 ">
             <div class="m-16 flex flex-col items-center">
-                <h1 class="text-blue-400">All Projects</h1>
-                <p class="text-blue-500">
+                <h1 class="text-indigo-400">All Projects</h1>
+                <p class="text-indigo-400">
                     Here is a list of some projects I've done.
                 </p>
                 <div id="app">
@@ -17,13 +17,13 @@
 
                 <div class="flex flex-col justify-between">
                     <% projects.forEach(function(project, index){ %>
-
+                        <% image = project.images[0] ? project.images[0] : "https://s3.us-east-2.amazonaws.com/smoran.dev-media/images/placeholder.png" %>
                         <div class="p-5">
                             <!-- Projects -->
                             <% if(Math.random() > 0.5)  { %>
                                 <div class="flex flex-row overflow-hidden rounded-lg shadow-lg">
                                 <a href="/projects/<%= project.name%>" class="flex">
-                                    <img alt="Placeholder" class="block max-h-96" src="<%= project.images[0] %>">
+                                    <img alt="Placeholder" class="block max-h-96" src="<%= image %>">
                                 </a>
 
                                 <div class="flex items-center justify-between leading-tight p-2 md:p-4">
@@ -51,7 +51,7 @@
                                     </div>
 
                                     <a href="/projects/<%= project.name%>" class="flex">
-                                        <img alt="Placeholder" class="block max-h-96" src="<%= project.images[0] %>">
+                                        <img alt="Placeholder" class="block max-h-96" src="<%= image %>">
                                     </a>
                                 <% } %>
                             </div>

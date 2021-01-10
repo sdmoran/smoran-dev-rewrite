@@ -7,13 +7,13 @@
     <body class="">
         <div class="flex flex-col  justify-center space-y-20">
             <div class="m-16 flex flex-col items-center">
-                <h1 class="text-blue-400">Welcome to my site!</h1>
+                <h1 class="text-indigo-400">Welcome to my site!</h1>
                 <p>I'm Sam. I'm a senior studying Computer Science at Worcester Polytechnic Institute.</p>
             </div>
             <!-- Projects -->
             <div class="flex flex-col items-center space-y-6">
                 <div class="flex flex-col items-center">
-                    <h1 class="text-blue-400">Projects</h1>
+                    <h1 class="text-indigo-400">Projects</h1>
                     <p>Here are some projects that I've worked on in the past. Check them out!</p>
                 </div>
 
@@ -22,7 +22,8 @@
                         <% project = projects[i] %>
                         <div class="flex flex-col rounded-lg bg-gradient-to-l hover:from-pink-400 hover:to-amber-300 from-blue-400 to-green-400 border-b-2 border-red-600 shadow-kg mousepoint" onclick="location.href='/projects/<%= project.name %>'">
                             <a href="/projects/<%= project.name %>" class="flex">
-                                <img alt="Placeholder" class="block max-h-96" src="<%= project.images[0] %>">
+                                <% image = project.images[0] ? project.images[0] : "https://s3.us-east-2.amazonaws.com/smoran.dev-media/images/placeholder.png" %>
+                                <img alt="Placeholder" class="rounded-md mx-auto object-fit max-h-96" src="<%= image %>">
                             </a>
 
                             <div class="flex items-center justify-between leading-tight p-2 md:p-4">
