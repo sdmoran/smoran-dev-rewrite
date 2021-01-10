@@ -7,7 +7,7 @@
     <body>
         <div class="flex flex-col justify-center space-y-20 ">
             <div class="m-16 flex flex-col items-center">
-                <h1 class="text-blue-400"><%= edit ? "Edit" : "Add"%> Project</h1>
+                <h1 class="text-blue-400"><%= edit ? "Edit" : "Add" %> Project</h1>
                 <h2 class="text-blue-300"><%= project.name %></h2>
                 <form class="flex flex-col w-2/3" action="/admin/add_project" method="POST">
 
@@ -15,7 +15,13 @@
                     <input id="name" name="name" type="text" value="<%= project.name %>" class="flex-grow border-2 border-gray-300 rounded-md py-3 px-4 my-1">
                     
                     <label for="blurb">Project Blurb</label>
-                    <textarea id="blurb" name="blurb" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"><%= project.blurb %></textarea>
+                    <textarea id="blurb" name="blurb" class="border-2 border-gray-300 rounded-md py-3 px-4 my-1 w-full"><%= project.blurb %></textarea>
+                    
+                    <label for="github">GitHub Link</label>
+                    <input id="github" name="github" type="text" class="border-2 border-gray-300 rounded-md py-3 px-4 my-1" value="<%= project.github %>">
+                    
+                    <label for="liveapp">Live App</label>
+                    <input id="liveapp" name="liveapp" type="text" class="border-2 border-gray-300 rounded-md py-3 px-4 my-1" value="<%= project.liveapp %>">
                     
                     <label for="class">Class</label>
                     <input id="class" name="class" type="text" value="<%= project.class %>" class="flex-grow border-2 border-gray-300 rounded-md py-3 px-4 my-1">
@@ -23,20 +29,26 @@
                     <div id="paragraphs" class="flex flex-col">
                         <label for="paragraphInputs">Project Description</label>
                         <div id="paragraphInputs" class="flex flex-col">
-                            <% if(project.paragraphs) { %>
+                            <% if(project.paragraphs && project.paragraphs.length > 0) { %>
                                 <% project.paragraphs.forEach(function(paragraph, idx) { %>
-                                    <textarea id="paragraph1" name="paragraph1" type="text" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"><%= paragraph %></textarea>
+                                    <div id="paragraph<%= idx %>_holder" class="flex flex-row">
+                                        <textarea id="paragraph<%= idx %>" name="paragraph1" type="text" class="paragraph-field border-2 border-gray-300 rounded-md py-3 px-4 my-1 w-full"><%= paragraph %></textarea>
+                                        <button type="button" class="rounded-md bg-red-500 text-white p-2 m-1" onclick="deleteParagraph({ num: <%= idx %> })">Delete</button>
+                                    </div>
                                 <% }) %>
                             <!-- If no existing paragraphs, start with at least 1. -->
                             <% } else { %>
-                                <textarea id="paragraph1" name="paragraph1" type="text" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"></textarea>
+                                <div id="paragraph1_holder" class="flex flex-row">
+                                    <textarea id="paragraph1" name="paragraph1" type="text" class="paragraph-field border-2 border-gray-300 rounded-md py-3 px-4 my-1 w-full"></textarea>
+                                    <button type="button" class="rounded-md bg-red-500 text-white p-2 m-1" onclick="deleteParagraph(1)">Delete</button>
+                                </div>
                             <% } %>
                         </div>
                         <button type="button" class="items-center text-center rounded-md bg-blue-300" onclick="addParagraphField()">Add Paragraph</button>
                     </div>
                     
                     <label for="technologies">Technologies</label>
-                    <textarea id="technologies" name="technologies" class="resize border-2 border-gray-300 rounded-md py-3 px-4 my-1"><%= project.technologies %></textarea>
+                    <textarea id="technologies" name="technologies" class="border-2 border-gray-300 rounded-md py-3 px-4 my-1 w-full"><%= project.technologies %></textarea>
                     
                     <label for="images">Images</label>
                     <div class="border-2 border-gray-300 rounded-md py-3 px-4 my-1" id="imagediv">
@@ -44,9 +56,9 @@
 
                         <% if(project.images) { %>
                             <% project.images.forEach(function(img, idx) { %>
-                                <div class="flex flex-row">
+                                <div class="flex flex-row" id="img<%= idx %>_holder">
                                     <img src="<%= img %>" class="rounded-md max-h-80 border-2 border-indigo-300 m-1">
-                                    <button type="button" class="rounded-md bg-red-500 text-white p-2 m-1">Delete</button>
+                                    <button type="button" class="rounded-md bg-red-500 text-white p-2 m-1" onclick="deleteImage({ num: <%= idx %>, url: '<%= img %>' })">Delete</button>
                                 </div>
                             <% }) %>
                         <% } %>
@@ -59,7 +71,50 @@
     </body>
 
     <script>
-        let paragraphs = 1;
+        // Number of paragraphs
+        let paragraphs = <%= project.paragraphs ? project.paragraphs.length : 1 %>;
+        let existingImages = [];
+
+        <% if(project.images) { %>
+            <% project.images.forEach(function(img, idx) { %>
+                existingImages.push("<%= img %>");
+            <% }) %>
+        <% } %>
+        
+        // Delete image from DOM and add to array of elements that should be deleted
+        // from DB, which will be sent to API when form is submitted
+        function deleteImage(img) {
+            console.log("Deleting image " + img.num);
+            // If this already has an S3 url, remove it from the existingImages list.
+            if(img.url) {
+                const idx = existingImages.indexOf(img.url);
+                if(idx > -1) {
+                    existingImages.splice(idx, 1);
+                }
+            }
+            let parent = document.getElementById("imagediv")
+            let child = document.getElementById(`img${img.num}_holder`);
+            parent.removeChild(child);
+        }
+
+        // Delete paragraph from DOM and add to array of elements that should be deleted
+        // from DB, which will be sent to API when form is submitted
+        function deleteParagraph(p) {
+            console.log("Deleting paragraph " + p.num);
+            let parent = document.getElementById("paragraphInputs");
+            let child = document.getElementById(`paragraph${p.num}_holder`);
+            parent.removeChild(child);
+        }
+
+        // Create DOM element for delete button, used in a few places
+        function createDeleteButton(onclick) {
+            const deleteButton = document.createElement("button");
+            deleteButton.innerHTML = "Delete";
+            deleteButton.classList.add("rounded-md", "bg-red-500", "text-white", "p-2", "m-1");
+            deleteButton.type = "button"
+            deleteButton.onclick = onclick;
+            return deleteButton;
+        }
 
         // Preview files user uploads
         function loadImgPreview(event) {
@@ -83,9 +138,10 @@
                     }
 
                     // Delete button
-                    let deleteButton = document.createElement("button");
-                    deleteButton.innerHTML = "Delete";
-                    deleteButton.classList.add("rounded-md", "bg-red-500", "text-white", "p-2", "m-1");
+                    const imageNumObject = { num: i};
+                    const deleteButton = createDeleteButton(function() {
+                        return deleteImage(imageNumObject);
+                    });
 
                     containerDiv.appendChild(preview);
                     containerDiv.appendChild(deleteButton);
@@ -94,33 +150,62 @@
             }
         }
 
+        // Add new paragraph input
         function addParagraphField() {
             paragraphs += 1;
-            const div = document.getElementById("paragraphInputs");
-            const newElt = document.createElement('textarea');
-            newElt.id = "paragraph" + paragraphs;
-            newElt.name = "paragraph" + paragraphs;
-            newElt.type = "text";
-            newElt.placeholder = "Paragraph " + paragraphs;
-            let classes = ["resize", "border-2", "border-gray-300", "rounded-md", "py-3", "px-4", "my-1"];
-            for(let i = 0; i < classes.length; i++) {
-                newElt.classList.add(classes[i]);
-            }
-            div.appendChild(newElt);
+            // Parent element of holder div
+            const parent = document.getElementById("paragraphInputs");
+
+            // Create div that will hold paragraph input and delete button
+            const holder = document.createElement("div");
+            holder.id = `paragraph${paragraphs}_holder`;
+            holder.classList.add("flex");
+            holder.classList.add("flex-row");
+
+            // Create paragraph input
+            const newInput = document.createElement("textarea");
+            newInput.id = "paragraph" + paragraphs;
+            newInput.name = "paragraph" + paragraphs;
+            newInput.type = "text";
+            newInput.placeholder = "Paragraph " + paragraphs;
+            newInput.classList.add("paragraph-field", "w-full", "border-2", "border-gray-300", "rounded-md", "py-3", "px-4", "my-1");
+
+            // Create object to pass to function. I admit this is a little funky, but having spent some time on this
+            // I think this is a good solution. It avoids the issue of closures where the paragraphs variable
+            // passed to the createDeleteButton function changes after being passed, causing each delete
+            // button to try and delete the CURRENT value of paragraphs, not the value when it was passed, which
+            // causes problems.
+            // 
+            // One workaround I came up with was to pass the ID of the div holding the paragraph element, which is a string
+            // and won't change. However, if I did that, I would have to parse the paragraph number contained in that string out 
+            // to append to the list of items to delete... which is doable, but kind of messy. Creating a new object
+            // here with the value seemed to be the simplest solution.
+            const paragraphNumObject = { num: paragraphs };
+
+            const deleteButton = createDeleteButton(function() {
+                return deleteParagraph(paragraphNumObject);
+            });
+            
+            holder.appendChild(newInput);
+            holder.appendChild(deleteButton);
+            parent.appendChild(holder);
         }
 
         // Submit form
         function submitForm() {
             const name = document.getElementById("name").value;
             const blurb = document.getElementById("blurb").value;
-            const paragraphNodes = document.getElementById("paragraphInputs").children;
+            const github = document.getElementById("github").value;
+            const liveapp = document.getElementById("liveapp").value;
+            const paragraphNodes = document.getElementsByClassName("paragraph-field");
             const paragraphs = [];
             for(let i = 0; i < paragraphNodes.length; i++) {
                 let contents = paragraphNodes[i].value;
                 if(contents) {
                     paragraphs.push(contents);
                 }
-            }            
+            }
+
             const technologies = document.getElementById("technologies").value;
             const classIfAny = document.getElementById("class").value;
 
@@ -128,11 +213,14 @@
             
             project.append("name", name);
             project.append("blurb", blurb);
+            project.append("github", github);
+            project.append("liveapp", liveapp);
             // Encode as JSON string, otherwise it gets sent to server comma-separated
             project.append("paragraphs", JSON.stringify(paragraphs));
+            project.append("images", JSON.stringify(existingImages));
             project.append("technologies", technologies);
 
-            // Loop through images and attach them to FormData 
+            // Loop through images and attach them to FormData
             const images = document.getElementById("images").files;
             for(let i = 0; i < images.length; i++) {
                 project.append("image" + i, images[i])
@@ -142,6 +230,7 @@
                 project.append("class", classIfAny);
             }
 
+            console.log(existingImages)
             console.log(project);
 
             <% if(edit) { %>

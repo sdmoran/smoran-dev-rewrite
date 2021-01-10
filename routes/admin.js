@@ -127,12 +127,11 @@ router.post('/projects/edit/:projectID', devOnly, (req, res) => {
     const project = req.body;
     project.paragraphs = JSON.parse(req.body.paragraphs);
 
+    project.images = JSON.parse(project.images);
+    console.log(project);
+
     if(!project.images) {
         project.images = []
-    }
-    else {
-        console.log("IMAGES:");
-        console.log(project.images);
     }
 
     handleFileUpload(project, req.files)
@@ -140,7 +139,6 @@ router.post('/projects/edit/:projectID', devOnly, (req, res) => {
         API.updateProject(projectID, project);
         res.redirect('/all_projects');
     })
-
 })
 
 router.post('/projects/delete/:projectID', devOnly, (req, res) => {

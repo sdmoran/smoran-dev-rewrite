@@ -66,10 +66,8 @@ const updateProject = function(projectID, project) {
                 class: project.class,
                 blurb: project.blurb,
                 paragraphs: project.paragraphs,
+                images: project.images
             },
-            $push: {
-                images: { $each:  project.images }
-            }
         },
         { 
             upsert: true
