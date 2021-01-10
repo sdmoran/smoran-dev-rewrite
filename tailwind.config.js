@@ -10,7 +10,9 @@ module.exports = {
         },
         colors: {
             amber: colors.amber,
-            indigo: colors.indigo
+            indigo: colors.indigo,
+            'header': '#818cf8', // Same as indigo-400 color, but more configurable this way
+            'primary': '#818cf8'
         },
       },
     },
