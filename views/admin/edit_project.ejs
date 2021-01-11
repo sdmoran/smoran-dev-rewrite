@@ -51,8 +51,10 @@
                     <textarea id="technologies" name="technologies" class="border-2 border-gray-300 rounded-md py-3 px-4 my-1 w-full"><%= project.technologies %></textarea>
                     
                     <label for="images">Images</label>
-                    <div class="border-2 border-gray-300 rounded-md py-3 px-4 my-1" id="imagediv">
+                    
+                    <div class="border-2 border-gray-300 rounded-md py-3 px-4 my-1">
                         <input type="file" id="images" multiple name="image" onChange="loadImgPreview(event)">
+                        <div id="imagediv">
 
                         <% if(project.images) { %>
                             <% project.images.forEach(function(img, idx) { %>
@@ -62,6 +64,7 @@
                                 </div>
                             <% }) %>
                         <% } %>
+                        </div>
                     </div>
                     
                     <button type="button" class="items-center text-center rounded-md bg-blue-300" onclick="submitForm()">Update Project</button>
@@ -118,15 +121,19 @@
 
         // Preview files user uploads
         function loadImgPreview(event) {
+            // Clear existing image previews
+            const imgDiv = document.getElementById("imagediv");
+            imgDiv.innerHTML = "";
+
             const files = event.target.files;
             console.log(files)
-            const imgDiv = document.getElementById("imagediv");
             // For each file, create image and append it to images div
             for(let i = 0; i < files.length; i++) {
                 let file = files[i];
                 if(file.type.match('image')) {
                     // Containing div
                     let containerDiv = document.createElement("div");
+                    containerDiv.id=`img${i}_holder`;
                     containerDiv.classList.add("flex", "flex-row");
 
                     // Actual preview

@@ -6,6 +6,9 @@ const ObjectID = require('mongodb').ObjectID
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_URL = process.env.DB_URL;
+const DB_NAME = process.env.DB_NAME;
+const AWS_BUCKET = process.env.AWS_BUCKET;
+
 
 const uri = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_URL}/smoran-dev?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true });
@@ -14,7 +17,7 @@ client.connect();
 
 const getAllProjects = function() {
     return new Promise((resolve, reject) => {
-        client.db("smoran-dev").collection("projects").find({}).toArray((err, result) => {
+        client.db(DB_NAME).collection("projects").find({}).toArray((err, result) => {
             if(err) reject(err);
             resolve(result);
         })
@@ -23,7 +26,7 @@ const getAllProjects = function() {
 
 const getProject = function(projectname) {
     return new Promise((resolve, reject) => {
-        client.db("smoran-dev").collection("projects").findOne({name: projectname}).then((result) => {
+        client.db(DB_NAME).collection("projects").findOne({name: projectname}).then((result) => {
             if(result) resolve(result);
             reject(result);
         }).catch(e => {
@@ -35,7 +38,7 @@ const getProject = function(projectname) {
 const getProjectByID = function(id) {
     return new Promise((resolve, reject) => {
         const objectId = new ObjectID(id);
-        client.db("smoran-dev").collection("projects").findOne({'_id': objectId}).then((result) => {
+        client.db(DB_NAME).collection("projects").findOne({'_id': objectId}).then((result) => {
             if(result) resolve(result);
             reject(result);
         }).catch(e => {
@@ -46,7 +49,7 @@ const getProjectByID = function(id) {
 
 const addProject = function(project) {
     return new Promise((resolve, reject) => {
-        client.db("smoran-dev").collection("projects").insertOne(project).then((result) => {
+        client.db(DB_NAME).collection("projects").insertOne(project).then((result) => {
             if(result) resolve(result);
             reject(result);
         }).catch(e => {
@@ -58,7 +61,7 @@ const addProject = function(project) {
 const updateProject = function(projectID, project) {
     const objectId = new ObjectID(projectID)
     return new Promise((resolve, reject) => {
-        client.db("smoran-dev").collection("projects")
+        client.db(DB_NAME).collection("projects")
         .updateOne({'_id': objectId}, 
         {
             $set: {
@@ -85,7 +88,7 @@ const updateProject = function(projectID, project) {
 const deleteProject = function(projectID) {
     const objectId = new ObjectID(projectID)
     return new Promise((resolve, reject) => {
-        client.db("smoran-dev").collection("projects")
+        client.db(DB_NAME).collection("projects")
         .deleteOne({'_id': objectId})
         .then( result => {
             resolve(result)
@@ -99,7 +102,7 @@ const deleteProject = function(projectID) {
 const uploadImage = function(fname) {
     return new Promise((resolve, reject) => {
         s3 = new AWS.S3({apiVersion: '2020-12-28'});
-        const uploadParams = {Bucket: "smoran.dev-media", Key: '', Body: ''};
+        const uploadParams = {Bucket: AWS_BUCKET, Key: '', Body: ''};
         var fs = require('fs');
         const file = fname;
         var fStream = fs.createReadStream(file);
