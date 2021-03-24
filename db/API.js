@@ -122,6 +122,30 @@ const uploadImage = function(fname) {
     })
 }
 
+const addMessage = function(msg) {
+    return new Promise((resolve, reject) => {
+        client.db(DB_NAME).collection("messages")
+        .insertOne(msg)
+        .then((result) => {
+            if(result) resolve(result);
+            reject(result);
+        }).catch(e => {
+            reject(e);
+        })
+    })
+}
+
+const getMessages = function() {
+    return new Promise((resolve, reject) => {
+        client.db(DB_NAME).collection("messages")
+        .find({}, {projection: {_id: 0}})
+        .toArray((err, result) => {
+            if(err) reject(err);
+            resolve(result);
+        })
+    })
+}
+
 exports.getProject = getProject;
 exports.getProjectByID = getProjectByID;
 exports.getAllProjects = getAllProjects;
@@ -129,3 +153,5 @@ exports.addProject = addProject;
 exports.updateProject = updateProject;
 exports.deleteProject = deleteProject;
 exports.uploadImage = uploadImage;
+exports.addMessage = addMessage;
+exports.getMessages = getMessages;

@@ -10,6 +10,7 @@ const API = require('./db/API')
 
 const projectRoutes = require('./routes/projects');
 const adminRoutes = require('./routes/admin');
+const smsRoutes = require('./routes/sms');
 
 // Set environment variable for uploaded images. Used in admin module.
 process.env.IMAGE_DIR = __dirname + "/files/images/"
@@ -25,6 +26,7 @@ app.use(fileUpload({
 app.use('/files', express.static('files'));
 app.use('/projects', projectRoutes);
 app.use('/admin', adminRoutes);
+app.use('/sms', smsRoutes);
 
 app.get('/', (req, res) => {
     API.getAllProjects().then(projects => {
