@@ -124,6 +124,7 @@ const uploadImage = function(fname) {
 
 const addMessage = function(msg) {
     return new Promise((resolve, reject) => {
+        msg.timestamp = Date.now();
         client.db(DB_NAME).collection("messages")
         .insertOne(msg)
         .then((result) => {
@@ -137,8 +138,10 @@ const addMessage = function(msg) {
 
 const getMessages = function() {
     return new Promise((resolve, reject) => {
+        const sortby = {timestamp: -1}
         client.db(DB_NAME).collection("messages")
-        .find({}, {projection: {_id: 0}})
+        .find({}, {projection: {Body: 1, timestamp: 1, _id: 0}})
+        .sort(sortby)
         .toArray((err, result) => {
             if(err) reject(err);
             resolve(result);
