@@ -7,17 +7,14 @@
     <body class="">
         <div class="flex flex-col  justify-center space-y-6">
             <div class="m-16 flex flex-col items-center">
-                <h1 class="text-header">Welcome to my site!</h1>
-                <h3 class="text-primary text-lg">I'm Sam. I'm a senior studying Computer Science at Worcester Polytechnic Institute.</h3>
+                <!-- Welcome message -->
+                <h1 class="text-header">Hi, I'm Sam, I'm a software engineer.</h1>
                 <div class="flex flex-col items-start my-4 text-primary">
-                    <p>I built this website as part of the Digitalocean/DEV hackathon to improve my
-                        web development skills and create a portfolio to show off some of my project work. Take a look around!
-                    </p>
                     <p>
-                        If you're interested, go check out my blog post that goes into more detail about the process of creating this site. You can find that <a href="https://dev.to/sdmoran/personal-website-on-digitalocean-app-platform-1ea0" class="text-blue-500">here.</a>
+                        I built this website as part of the Digitalocean/DEV hackathon during my senior year of college to improve my
+                        web development skills and show off some of my project work. Take a look around!
                     </p>
                 </div>
-               
             </div>
             <!-- Projects -->
             <div class="flex flex-col items-center space-y-6">
@@ -25,8 +22,7 @@
                     <h1 class="text-header">Projects</h1>
                     <p class="text-primary">Here are some projects that I've worked on in the past. Check them out!</p>
                 </div>
-
-                <div class="flex flex-row justify-center space-x-20 w-4/5" >
+                <div class="flex justify-center lg:flex-row lg:space-x-20 lg:space-y-0 sm:flex-col sm:space-y-20 sm:space-x-0 w-4/5" >
                     <% for(let i = 0; i < 3; i++) { %>
                         <% project = projects[i] %>
                         <div class="flex flex-col rounded-lg bg-gradient-to-l hover:from-pink-400 hover:to-amber-300 from-blue-400 to-green-400 border-b-2 border-red-600 shadow-kg mousepoint" onclick="location.href='/projects/<%= project.name %>'">
@@ -49,6 +45,8 @@
                     <% }%>
                 </div>
             </div>
+
+
         </div>
     </body>
 </html>
