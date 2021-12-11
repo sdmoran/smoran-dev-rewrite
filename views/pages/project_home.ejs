@@ -21,7 +21,7 @@
                         <div class="p-5">
                             <!-- Projects -->
                             <% if(Math.random() > 0.5)  { %>
-                                <div class="flex flex-row overflow-hidden rounded-lg shadow-lg">
+                                <div class="flex flex-row overflow-hidden rounded-lg shadow-2xl hover:bg-purple-200">
                                 <a href="/projects/<%= project.name%>" class="flex">
                                     <img alt="Placeholder" class="block max-h-96" src="<%= image %>">
                                 </a>
@@ -38,7 +38,7 @@
                                 </div>
 
                                 <% } else { %>
-                                    <div class="flex justify-between overflow-hidden rounded-lg shadow-lg">
+                                    <div class="flex justify-between overflow-hidden rounded-lg shadow-2xl hover:bg-purple-200">
                                     <div class="flex items-center justify-between leading-tight p-2 md:p-4">
                                         <div>
                                             <h1 class="text-lg">
